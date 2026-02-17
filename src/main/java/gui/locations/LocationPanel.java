@@ -11,7 +11,10 @@ import models.Titre;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,7 +34,7 @@ import java.util.List;
  * ✓ estLouee() : Vérifie que cassette n'est pas déjà louée
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.1
  */
 public class LocationPanel extends JPanel {
 
@@ -43,17 +46,33 @@ public class LocationPanel extends JPanel {
     private TitreDAO titreDAO;
     private JButton btnAjouterLocation, btnRetourner, btnActualiser;
 
+    private Color primaryColor = new Color(41, 128, 185);
+    private Color backgroundColor = new Color(245, 245, 245);
+    private Color panelBackgroundColor = Color.WHITE;
+
     public LocationPanel() {
         locationDAO = new LocationDAO();
         abonneDAO = new AbonneDAO();
         cassetteDAO = new CassetteDAO();
         titreDAO = new TitreDAO();
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
+        setBackground(backgroundColor);
 
+        createTitlePanel();
         createTable();
         createButtonPanel();
         loadData();
+    }
+
+    private void createTitlePanel() {
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(primaryColor);
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        JLabel title = new JLabel("Gestion des Locations");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+        add(titlePanel, BorderLayout.NORTH);
     }
 
     /**
@@ -70,9 +89,23 @@ public class LocationPanel extends JPanel {
 
         tableLocations = new JTable(modelTable);
         tableLocations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableLocations.setRowHeight(25);
+        tableLocations.setRowHeight(30);
+        tableLocations.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tableLocations.setBackground(panelBackgroundColor);
+        tableLocations.setFillsViewportHeight(true);
+        tableLocations.setGridColor(new Color(230, 230, 230));
+
+        // Header styling
+        JTableHeader header = tableLocations.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        header.setBackground(new Color(230, 230, 230)); // Light gray background
+        header.setForeground(Color.BLACK); // Black text
+        header.setPreferredSize(new Dimension(header.getWidth(), 35));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
 
         JScrollPane scrollPane = new JScrollPane(tableLocations);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE); // Ensure viewport is white
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -81,25 +114,49 @@ public class LocationPanel extends JPanel {
      */
     private void createButtonPanel() {
         JPanel panelBoutons = new JPanel();
-        panelBoutons.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panelBoutons.setBackground(new Color(240, 240, 240));
+        panelBoutons.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panelBoutons.setBackground(backgroundColor);
         panelBoutons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        btnAjouterLocation = new JButton("➕ Louer une cassette");
+        btnAjouterLocation = createStyledButton("➕ Louer une cassette", primaryColor);
         btnAjouterLocation.addActionListener(e -> ajouterLocation());
         panelBoutons.add(btnAjouterLocation);
 
-        btnRetourner = new JButton("🔙 Retourner une cassette");
+        btnRetourner = createStyledButton("🔙 Retourner une cassette", new Color(231, 76, 60));
         btnRetourner.addActionListener(e -> retournerCassette());
         panelBoutons.add(btnRetourner);
 
         panelBoutons.add(Box.createHorizontalStrut(20));
 
-        btnActualiser = new JButton("🔄 Actualiser");
+        btnActualiser = createStyledButton("🔄 Actualiser", new Color(149, 165, 166));
         btnActualiser.addActionListener(e -> loadData());
         panelBoutons.add(btnActualiser);
 
         add(panelBoutons, BorderLayout.SOUTH);
+    }
+
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setPreferredSize(new Dimension(180, 35));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(bgColor.brighter());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(bgColor);
+            }
+        });
+        return button;
     }
 
     /**
@@ -156,11 +213,16 @@ public class LocationPanel extends JPanel {
 
             // Dialog de saisie
             JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Enregistrer une location", true);
-            dialog.setSize(450, 200);
+            dialog.setSize(450, 250);
             dialog.setLocationRelativeTo(this);
 
-            JPanel panel = new JPanel(new GridLayout(3, 2, 15, 15));
+            JPanel panel = new JPanel(new GridBagLayout());
             panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            panel.setBackground(Color.WHITE);
+            
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
 
             JComboBox<String> comboAbonne = new JComboBox<>();
             for (Abonne a : abonnes) {
@@ -174,12 +236,17 @@ public class LocationPanel extends JPanel {
                 comboCassette.addItem(titre + " (ID: " + c.getNumCassette() + ")");
             }
 
-            panel.add(new JLabel("Abonné :"));
-            panel.add(comboAbonne);
-            panel.add(new JLabel("Cassette :"));
-            panel.add(comboCassette);
+            gbc.gridx = 0; gbc.gridy = 0;
+            panel.add(new JLabel("Abonné :"), gbc);
+            gbc.gridx = 1; gbc.gridy = 0;
+            panel.add(comboAbonne, gbc);
+            
+            gbc.gridx = 0; gbc.gridy = 1;
+            panel.add(new JLabel("Cassette :"), gbc);
+            gbc.gridx = 1; gbc.gridy = 1;
+            panel.add(comboCassette, gbc);
 
-            JButton btnOK = new JButton("Confirmer location");
+            JButton btnOK = createStyledButton("Confirmer location", primaryColor);
             btnOK.addActionListener(e -> {
                 try {
                     Abonne selectedAbonne = abonnes.get(comboAbonne.getSelectedIndex());
@@ -230,7 +297,11 @@ public class LocationPanel extends JPanel {
                 }
             });
 
-            panel.add(btnOK);
+            gbc.gridx = 0; gbc.gridy = 2;
+            gbc.gridwidth = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+            panel.add(btnOK, gbc);
+
             dialog.add(panel);
             dialog.setVisible(true);
 

@@ -3,15 +3,18 @@ package gui;
 import util.DatabaseConnection;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * LoginFrame - Écran d'authentification
  *
  * Page de connexion pour accéder à l'application Club Vidéo.
  * Authentification simple : admin/admin
+ * Design moderne et épuré.
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.0
  */
 public class LoginFrame extends JFrame {
 
@@ -19,13 +22,16 @@ public class LoginFrame extends JFrame {
     private JPasswordField txtPassword;
     private JButton btnLogin;
     private JButton btnCancel;
+    private Color primaryColor = new Color(41, 128, 185);
+    private Color hoverColor = new Color(52, 152, 219);
 
     public LoginFrame() {
         setTitle("Club Vidéo - Authentification");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(450, 280);
+        setSize(450, 320);
         setLocationRelativeTo(null);
         setResizable(false);
+        setUndecorated(true); // Retire la barre de titre standard
 
         createLoginPanel();
         setVisible(true);
@@ -36,57 +42,71 @@ public class LoginFrame extends JFrame {
      */
     private void createLoginPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(240, 240, 240));
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
 
         // Panel titre
         JPanel titlePanel = new JPanel();
-        titlePanel.setBackground(new Color(41, 128, 185));
+        titlePanel.setBackground(primaryColor);
         titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
-        JLabel title = new JLabel("Club Vidéo - Connexion");
-        title.setFont(new Font("Arial", Font.BOLD, 20));
+        JLabel title = new JLabel("CLUB VIDÉO");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
         title.setForeground(Color.WHITE);
         titlePanel.add(title);
 
         // Panel formulaire
-        JPanel formPanel = new JPanel(new GridLayout(3, 2, 15, 20));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
-        formPanel.setBackground(new Color(240, 240, 240));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel lblUsername = new JLabel("Identifiant :");
-        lblUsername.setFont(new Font("Arial", Font.PLAIN, 13));
-        txtUsername = new JTextField();
+        JLabel lblUsername = new JLabel("Identifiant");
+        lblUsername.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblUsername.setForeground(Color.GRAY);
+        
+        txtUsername = new JTextField(15);
         txtUsername.setText("admin");
-        txtUsername.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtUsername.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        txtUsername.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 2, 0, primaryColor),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
 
-        JLabel lblPassword = new JLabel("Mot de passe :");
-        lblPassword.setFont(new Font("Arial", Font.PLAIN, 13));
-        txtPassword = new JPasswordField();
+        JLabel lblPassword = new JLabel("Mot de passe");
+        lblPassword.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblPassword.setForeground(Color.GRAY);
+        
+        txtPassword = new JPasswordField(15);
         txtPassword.setText("admin");
-        txtPassword.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        txtPassword.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 2, 0, primaryColor),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
 
-        formPanel.add(lblUsername);
-        formPanel.add(txtUsername);
-        formPanel.add(lblPassword);
-        formPanel.add(txtPassword);
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(lblUsername, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(txtUsername, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 2;
+        formPanel.add(lblPassword, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 3;
+        formPanel.add(txtPassword, gbc);
 
         // Panel boutons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(240, 240, 240));
+        buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        btnLogin = new JButton("Connexion");
-        btnLogin.setPreferredSize(new Dimension(130, 40));
-        btnLogin.setFont(new Font("Arial", Font.BOLD, 12));
-        btnLogin.setBackground(new Color(41, 128, 185));
-        btnLogin.setForeground(Color.WHITE);
-        btnLogin.setFocusPainted(false);
+        btnLogin = createStyledButton("CONNEXION", primaryColor);
         btnLogin.addActionListener(e -> login());
 
-        btnCancel = new JButton("Quitter");
-        btnCancel.setPreferredSize(new Dimension(130, 40));
-        btnCancel.setFont(new Font("Arial", Font.BOLD, 12));
-        btnCancel.setFocusPainted(false);
+        btnCancel = createStyledButton("QUITTER", new Color(149, 165, 166));
         btnCancel.addActionListener(e -> System.exit(0));
 
         buttonPanel.add(btnLogin);
@@ -98,6 +118,28 @@ public class LoginFrame extends JFrame {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+    }
+    
+    private JButton createStyledButton(String text, Color bg) {
+        JButton btn = new JButton(text);
+        btn.setPreferredSize(new Dimension(130, 40));
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        btn.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent evt) {
+                btn.setBackground(bg.brighter());
+            }
+            public void mouseExited(MouseEvent evt) {
+                btn.setBackground(bg);
+            }
+        });
+        
+        return btn;
     }
 
     /**
@@ -121,10 +163,6 @@ public class LoginFrame extends JFrame {
                 // Tester la connexion à la base
                 DatabaseConnection.getInstance().testConnection();
 
-                JOptionPane.showMessageDialog(this,
-                        "✓ Connexion réussie !",
-                        "Succès",
-                        JOptionPane.INFORMATION_MESSAGE);
                 dispose();
                 new MainFrame();
             } catch (Exception e) {
@@ -147,6 +185,11 @@ public class LoginFrame extends JFrame {
      * Point d'entrée de l'application
      */
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         SwingUtilities.invokeLater(() -> new LoginFrame());
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
  * - Titre (JComboBox)
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.0
  */
 public class CassetteFormPanel extends JPanel {
 
@@ -33,11 +33,15 @@ public class CassetteFormPanel extends JPanel {
     private TitreDAO titreDAO;
     private Cassette cassette;
 
+    private Color primaryColor = new Color(41, 128, 185);
+    private Color backgroundColor = Color.WHITE;
+
     public CassetteFormPanel(Cassette cassette) {
         this.cassette = cassette;
         this.titreDAO = new TitreDAO();
 
-        setLayout(new GridLayout(4, 2, 15, 15));
+        setLayout(new GridBagLayout());
+        setBackground(backgroundColor);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setPreferredSize(new Dimension(450, 200));
 
@@ -61,28 +65,47 @@ public class CassetteFormPanel extends JPanel {
             titres = java.util.Collections.emptyList();
         }
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
         // Date d'achat
         JLabel lblDate = new JLabel("Date d'achat (YYYY-MM-DD) :");
-        txtDateAchat = new JTextField();
+        lblDate.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtDateAchat = new JTextField(15);
         txtDateAchat.setText(LocalDate.now().toString());
+        txtDateAchat.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         // Prix
         JLabel lblPrix = new JLabel("Prix (€) :");
+        lblPrix.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         spinnerPrix = new JSpinner(new SpinnerNumberModel(15.99, 0.01, 999.99, 0.01));
+        spinnerPrix.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         // Titre
         JLabel lblTitre = new JLabel("Titre du film :");
+        lblTitre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         comboTitre = new JComboBox<>();
+        comboTitre.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         for (Titre t : titres) {
             comboTitre.addItem(t.getNomTitre() + " (" + t.getDuree() + " min)");
         }
 
-        add(lblDate);
-        add(txtDateAchat);
-        add(lblPrix);
-        add(spinnerPrix);
-        add(lblTitre);
-        add(comboTitre);
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(lblDate, gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(txtDateAchat, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(lblPrix, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        add(spinnerPrix, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(lblTitre, gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        add(comboTitre, gbc);
     }
 
     /**

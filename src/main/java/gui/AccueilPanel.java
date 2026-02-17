@@ -10,7 +10,7 @@ import java.awt.*;
  * permet une navigation rapide vers les sections principales.
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.0
  */
 public class AccueilPanel extends JPanel {
 
@@ -31,7 +31,7 @@ public class AccueilPanel extends JPanel {
         titlePanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
 
         JLabel title = new JLabel("Bienvenue au Club Vidéo");
-        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
         title.setForeground(Color.WHITE);
         titlePanel.add(title);
 
@@ -47,7 +47,7 @@ public class AccueilPanel extends JPanel {
                 "<p>Bienvenue dans votre application de gestion de club vidéo.</p>" +
                 "<p>Utilisez le menu de navigation pour accéder aux différentes sections :</p>" +
                 "</html>");
-        description.setFont(new Font("Arial", Font.PLAIN, 14));
+        description.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         contentPanel.add(description);
 
         contentPanel.add(Box.createVerticalStrut(20));
@@ -95,8 +95,8 @@ public class AccueilPanel extends JPanel {
 
         // Footer
         contentPanel.add(Box.createVerticalStrut(20));
-        JLabel footer = new JLabel("Club Vidéo v1.0 - ÉTAPE 5");
-        footer.setFont(new Font("Arial", Font.ITALIC, 11));
+        JLabel footer = new JLabel("Club Vidéo v2.0 - ÉTAPE 5");
+        footer.setFont(new Font("Segoe UI", Font.ITALIC, 11));
         footer.setForeground(Color.GRAY);
         footer.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(footer);
@@ -118,11 +118,11 @@ public class AccueilPanel extends JPanel {
         ));
 
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
         titleLabel.setForeground(new Color(41, 128, 185));
 
         JLabel descLabel = new JLabel(description);
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        descLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         descLabel.setForeground(new Color(100, 100, 100));
 
         panel.add(titleLabel, BorderLayout.NORTH);
@@ -140,12 +140,12 @@ public class AccueilPanel extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
 
         JLabel labelJLabel = new JLabel(label);
-        labelJLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        labelJLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         labelJLabel.setForeground(Color.WHITE);
         labelJLabel.setHorizontalAlignment(JLabel.CENTER);
 
         JLabel valueJLabel = new JLabel(value);
-        valueJLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        valueJLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         valueJLabel.setForeground(Color.WHITE);
         valueJLabel.setHorizontalAlignment(JLabel.CENTER);
 

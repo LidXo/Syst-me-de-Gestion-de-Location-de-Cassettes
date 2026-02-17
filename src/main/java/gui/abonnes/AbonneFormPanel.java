@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * - Date d'entrée (JTextField)
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.0
  */
 public class AbonneFormPanel extends JPanel {
 
@@ -30,11 +30,14 @@ public class AbonneFormPanel extends JPanel {
     private JTextField txtDateEntree;
     private Abonne abonne;
 
+    private Color backgroundColor = Color.WHITE;
+
     public AbonneFormPanel(Abonne abonne) {
         this.abonne = abonne;
-        setLayout(new GridLayout(5, 2, 15, 15));
+        setLayout(new GridBagLayout());
+        setBackground(backgroundColor);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setPreferredSize(new Dimension(500, 300));
+        setPreferredSize(new Dimension(500, 350));
 
         createComponents();
         if (abonne != null) {
@@ -46,35 +49,60 @@ public class AbonneFormPanel extends JPanel {
      * Crée les composants du formulaire
      */
     private void createComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
         // Nom
         JLabel lblNom = new JLabel("Nom :");
-        txtNom = new JTextField();
+        lblNom.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtNom = new JTextField(20);
+        txtNom.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         // Adresse
         JLabel lblAdresse = new JLabel("Adresse :");
-        txtAdresse = new JTextArea(3, 30);
+        lblAdresse.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtAdresse = new JTextArea(3, 20);
+        txtAdresse.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         txtAdresse.setLineWrap(true);
         txtAdresse.setWrapStyleWord(true);
+        txtAdresse.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         JScrollPane scrollAdresse = new JScrollPane(txtAdresse);
 
         // Date d'abonnement
         JLabel lblDateAbo = new JLabel("Date d'abonnement (YYYY-MM-DD) :");
-        txtDateAbonnement = new JTextField();
+        lblDateAbo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtDateAbonnement = new JTextField(15);
         txtDateAbonnement.setText(LocalDate.now().toString());
+        txtDateAbonnement.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         // Date d'entrée
         JLabel lblDateEntree = new JLabel("Date d'entrée (YYYY-MM-DD) :");
-        txtDateEntree = new JTextField();
+        lblDateEntree.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtDateEntree = new JTextField(15);
         txtDateEntree.setText(LocalDate.now().toString());
+        txtDateEntree.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        add(lblNom);
-        add(txtNom);
-        add(lblAdresse);
-        add(scrollAdresse);
-        add(lblDateAbo);
-        add(txtDateAbonnement);
-        add(lblDateEntree);
-        add(txtDateEntree);
+        gbc.gridx = 0; gbc.gridy = 0;
+        add(lblNom, gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(txtNom, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(lblAdresse, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        add(scrollAdresse, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        add(lblDateAbo, gbc);
+        gbc.gridx = 1; gbc.gridy = 2;
+        add(txtDateAbonnement, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(lblDateEntree, gbc);
+        gbc.gridx = 1; gbc.gridy = 3;
+        add(txtDateEntree, gbc);
     }
 
     /**

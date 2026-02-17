@@ -5,7 +5,10 @@ import models.Abonne;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
@@ -25,25 +28,41 @@ import java.util.List;
  * - Rechercher un abonné
  *
  * @author Club Vidéo - ÉTAPE 5
- * @version 1.0
+ * @version 2.1
  */
 public class AbonneListPanel extends JPanel {
 
     private JTable tableAbonnes;
     private DefaultTableModel modelTable;
     private AbonneDAO abonneDAO;
-    private JButton btnAjouter, btnModifier, btnSupprimer, btnRechercheAvancee, btnActualiser;
+    private JButton btnAjouter, btnModifier, btnSupprimer, btnActualiser;
     private AbonneSearchPanel searchPanel;
+
+    private Color primaryColor = new Color(41, 128, 185);
+    private Color backgroundColor = new Color(245, 245, 245);
+    private Color panelBackgroundColor = Color.WHITE;
 
     public AbonneListPanel() {
         abonneDAO = new AbonneDAO();
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
+        setBackground(backgroundColor);
 
+        createTitlePanel();
         createSearchPanel();
         createTable();
         createButtonPanel();
         loadData();
+    }
+
+    private void createTitlePanel() {
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(primaryColor);
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+        JLabel title = new JLabel("Gestion des Abonnés");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+        add(titlePanel, BorderLayout.NORTH);
     }
 
     /**
@@ -51,6 +70,11 @@ public class AbonneListPanel extends JPanel {
      */
     private void createSearchPanel() {
         searchPanel = new AbonneSearchPanel(this::loadDataFiltered);
+        searchPanel.setBackground(panelBackgroundColor);
+        searchPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(220, 220, 220)),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
         add(searchPanel, BorderLayout.NORTH);
     }
 
@@ -68,14 +92,29 @@ public class AbonneListPanel extends JPanel {
 
         tableAbonnes = new JTable(modelTable);
         tableAbonnes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableAbonnes.setRowHeight(25);
+        tableAbonnes.setRowHeight(30);
+        tableAbonnes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tableAbonnes.setBackground(panelBackgroundColor);
+        tableAbonnes.setFillsViewportHeight(true);
+        tableAbonnes.setGridColor(new Color(230, 230, 230));
+
+        // Header styling
+        JTableHeader header = tableAbonnes.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        header.setBackground(new Color(230, 230, 230)); // Light gray background
+        header.setForeground(Color.BLACK); // Black text
+        header.setPreferredSize(new Dimension(header.getWidth(), 35));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+
         tableAbonnes.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tableAbonnes.getColumnModel().getColumn(1).setPreferredWidth(120);
-        tableAbonnes.getColumnModel().getColumn(2).setPreferredWidth(180);
-        tableAbonnes.getColumnModel().getColumn(3).setPreferredWidth(130);
-        tableAbonnes.getColumnModel().getColumn(4).setPreferredWidth(130);
+        tableAbonnes.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tableAbonnes.getColumnModel().getColumn(2).setPreferredWidth(200);
+        tableAbonnes.getColumnModel().getColumn(3).setPreferredWidth(120);
+        tableAbonnes.getColumnModel().getColumn(4).setPreferredWidth(120);
 
         JScrollPane scrollPane = new JScrollPane(tableAbonnes);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        scrollPane.getViewport().setBackground(Color.WHITE); // Ensure viewport is white
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -84,33 +123,53 @@ public class AbonneListPanel extends JPanel {
      */
     private void createButtonPanel() {
         JPanel panelBoutons = new JPanel();
-        panelBoutons.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panelBoutons.setBackground(new Color(240, 240, 240));
+        panelBoutons.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panelBoutons.setBackground(backgroundColor);
         panelBoutons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        btnAjouter = new JButton("➕ Ajouter");
+        btnAjouter = createStyledButton("➕ Ajouter", primaryColor);
         btnAjouter.addActionListener(e -> ajouterAbonne());
         panelBoutons.add(btnAjouter);
 
-        btnModifier = new JButton("✏️ Modifier");
+        btnModifier = createStyledButton("✏️ Modifier", primaryColor);
         btnModifier.addActionListener(e -> modifierAbonne());
         panelBoutons.add(btnModifier);
 
-        btnSupprimer = new JButton("🗑️ Supprimer");
+        btnSupprimer = createStyledButton("🗑️ Supprimer", new Color(231, 76, 60));
         btnSupprimer.addActionListener(e -> supprimerAbonne());
         panelBoutons.add(btnSupprimer);
 
         panelBoutons.add(Box.createHorizontalStrut(20));
 
-        btnRechercheAvancee = new JButton("🔍 Recherche avancée");
-        btnRechercheAvancee.addActionListener(e -> afficherRecherche());
-        panelBoutons.add(btnRechercheAvancee);
-
-        btnActualiser = new JButton("🔄 Actualiser");
+        btnActualiser = createStyledButton("🔄 Actualiser", new Color(149, 165, 166));
         btnActualiser.addActionListener(e -> loadData());
         panelBoutons.add(btnActualiser);
 
         add(panelBoutons, BorderLayout.SOUTH);
+    }
+
+    private JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setPreferredSize(new Dimension(120, 35));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(bgColor.brighter());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(bgColor);
+            }
+        });
+        return button;
     }
 
     /**
@@ -165,13 +224,6 @@ public class AbonneListPanel extends JPanel {
                     "Erreur",
                     JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**
-     * Affiche/cache le panel de recherche avancée
-     */
-    private void afficherRecherche() {
-        searchPanel.setVisible(!searchPanel.isVisible());
     }
 
     /**

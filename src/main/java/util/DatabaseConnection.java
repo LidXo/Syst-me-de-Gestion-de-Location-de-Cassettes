@@ -112,6 +112,9 @@ public class DatabaseConnection {
             System.out.println("✓ Driver JDBC chargé : " + driver);
 
             // Étape 2 : Créer la connexion
+            System.out.println("⏳ Tentative de connexion à la base de données...");
+            DriverManager.setLoginTimeout(5); // Timeout de 5 secondes
+
             this.connection = DriverManager.getConnection(url, user, password);
             System.out.println("✓ Connexion établie à la base de données");
             System.out.println("  - Statut : " + (connection.isValid(2) ? "Valide" : "Invalide"));
@@ -121,8 +124,9 @@ public class DatabaseConnection {
             System.err.println("Assurez-vous que mysql-connector-java est dans le classpath");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.err.println("ERREUR : Connexion à la base de données échouée");
-            System.err.println("Vérifiez les paramètres dans database.properties");
+            System.err.println("❌ ERREUR : Connexion à la base de données échouée");
+            System.err.println("👉 Vérifiez que le serveur MySQL est bien lancé (XAMPP/WAMP/Service).");
+            System.err.println("👉 Vérifiez les paramètres dans database.properties");
             e.printStackTrace();
         }
     }
