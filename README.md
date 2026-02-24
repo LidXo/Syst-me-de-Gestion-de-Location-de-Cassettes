@@ -1,8 +1,5 @@
 # 🎬 PROJET CLUB VIDÉO — Application de Gestion Java Swing
 
-> **Développé par :** HIT-T
-> **Contact :** 97 31 77 52 | formationfacile.hitt.tg@gmail.com
-
 Une application complète de gestion de vidéo-club avec une interface graphique moderne (thème sombre) développée en Java Swing.
 
 ---
@@ -93,4 +90,4 @@ java -cp "out:mysql-connector-j-8.x.x.jar" clubvideo.Main
 ```
 
 ---
-*© 2024 Club Vidéo Perso - Tous droits réservés.*
+*© 2026 Lidao - Tous droits réservés.*
