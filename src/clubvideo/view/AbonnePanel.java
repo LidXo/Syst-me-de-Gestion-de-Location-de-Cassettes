@@ -2,6 +2,7 @@ package clubvideo.view;
 
 import clubvideo.dao.AbonneDAO;
 import clubvideo.dao.CarteAbonneeDAO;
+import clubvideo.dao.LocationDAO;
 import clubvideo.model.Abonne;
 import clubvideo.model.CarteAbonnee;
 import clubvideo.util.UIStyles;
@@ -14,6 +15,7 @@ public class AbonnePanel extends JPanel implements Refreshable {
 
     private final AbonneDAO daoAbo = new AbonneDAO();
     private final CarteAbonneeDAO daoCarte = new CarteAbonneeDAO();
+    private final LocationDAO daoLoc = new LocationDAO();
 
     private DefaultTableModel tmAbonne;
     private DefaultTableModel tmCarte;
@@ -322,13 +324,22 @@ public class AbonnePanel extends JPanel implements Refreshable {
             if (ok == JOptionPane.YES_OPTION) {
                 try {
                     int id = Integer.parseInt(val);
+
+                    // Vérification des dépendances (Locations)
+                    if (daoLoc.countByAbonne(id) > 0) {
+                        error("Impossible de supprimer cet abonné car il possède des locations en cours.");
+                        return;
+                    }
+
                     daoCarte.delete(id); // cascade FK
                     daoAbo.delete(id);
-                    ok("Abonné et carte supprimés.");
+                    ok("Abonné et carte supprimés avec succès.");
                     fId.setText("");
                     refresh();
+                } catch (NumberFormatException nfe) {
+                    error("Le N° abonné doit être un nombre valide.");
                 } catch (Exception ex) {
-                    error(ex.getMessage());
+                    error("Erreur lors de la suppression : " + ex.getMessage());
                 }
             }
         });
@@ -402,8 +413,10 @@ public class AbonnePanel extends JPanel implements Refreshable {
                     });
             }
         } catch (Exception ex) {
-            if (tmAbonne != null) tmAbonne.setRowCount(0);
-            if (tmCarte != null) tmCarte.setRowCount(0);
+            if (tmAbonne != null)
+                tmAbonne.setRowCount(0);
+            if (tmCarte != null)
+                tmCarte.setRowCount(0);
             System.err.println("Erreur de rafraîchissement AbonnePanel: " + ex.getMessage());
         }
     }

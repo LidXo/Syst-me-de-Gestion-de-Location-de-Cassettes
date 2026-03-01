@@ -93,4 +93,28 @@ public class LocationDAO {
         }
         return 0;
     }
+
+    public int countByAbonne(int noAbo) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM LOCATION WHERE no_abonne = ?";
+        try (PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(sql)) {
+            ps.setInt(1, noAbo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    public int countByCassette(int noCas) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM LOCATION WHERE no_cassette = ?";
+        try (PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(sql)) {
+            ps.setInt(1, noCas);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }

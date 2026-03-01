@@ -1,6 +1,7 @@
 package clubvideo.view;
 
 import clubvideo.dao.CassetteDAO;
+import clubvideo.dao.LocationDAO;
 import clubvideo.model.Cassette;
 import clubvideo.util.UIStyles;
 import javax.swing.*;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 public class CassettePanel extends JPanel implements Refreshable {
 
     private final CassetteDAO dao = new CassetteDAO();
+    private final LocationDAO daoLoc = new LocationDAO();
     private DefaultTableModel tableModel;
 
     public CassettePanel() {
@@ -265,12 +267,22 @@ public class CassettePanel extends JPanel implements Refreshable {
                     "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (ok == JOptionPane.YES_OPTION) {
                 try {
-                    dao.delete(Integer.parseInt(val));
-                    ok("Cassette supprimée.");
+                    int id = Integer.parseInt(val);
+
+                    // Vérification des dépendances (Locations)
+                    if (daoLoc.countByCassette(id) > 0) {
+                        error("Impossible de supprimer cette cassette car elle est actuellement louée.");
+                        return;
+                    }
+
+                    dao.delete(id);
+                    ok("Cassette supprimée avec succès.");
                     fId.setText("");
                     refresh();
+                } catch (NumberFormatException nfe) {
+                    error("Le N° cassette doit être un nombre valide.");
                 } catch (Exception ex) {
-                    error(ex.getMessage());
+                    error("Erreur lors de la suppression : " + ex.getMessage());
                 }
             }
         });

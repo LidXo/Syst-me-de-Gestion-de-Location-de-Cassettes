@@ -43,11 +43,11 @@ public class ContactPanel extends JPanel implements Refreshable {
 
         Object[][] contacts = {
                 { "Responsable", "Admin Système VideoClub" },
-                { "E-mail", "admin@videoclub.fr" },
+                { "E-mail", "admin@videoclub.com" },
                 { "Téléphone", "+228 70 28 92 12" },
-                { "Adresse", "12 Rue du Cinéma, 75001 Paris" },
-                { "Support", "Lun – Ven, 09h00 – 18h00" },
-                { "Site web", "www.videoclub.fr" },
+                { "Adresse", "Lomé, Togo" },
+                { "Support", "Lun – Ven, 07h00 – 18h00" },
+                { "Site web", "www.videoclub.com" },
         };
 
         for (Object[] row : contacts) {
@@ -84,7 +84,7 @@ public class ContactPanel extends JPanel implements Refreshable {
                 { "Base de données", "MySQL 8+ — club_video" },
                 { "Technologie UI", "Java Swing (AWT/JDBC)" },
                 { "Architecture", "MVC — DAO Pattern" },
-                { "Connexion", "jdbc:mysql://localhost:3306/club_video" },
+                { "Connexion", "jdbc:mysql://localhost:3306/club_video2" },
         };
         for (String[] t : tech) {
             JLabel l = new JLabel("<html><b>" + t[0] + " : </b>" + t[1] + "</html>");

@@ -294,6 +294,14 @@ public class LocationPanel extends JPanel implements Refreshable {
                         "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (ok == JOptionPane.YES_OPTION) {
                     daoLoc.delete(noAbo, noCass);
+
+                    // Anomalie Corrigée : Décrémenter le nombre de locations de l'abonné
+                    Abonne a = daoAbo.findById(noAbo);
+                    if (a != null && a.getNombreLocation() > 0) {
+                        a.setNombreLocation(a.getNombreLocation() - 1);
+                        daoAbo.update(a);
+                    }
+
                     ok("Location supprimée.");
                     fAbo.setText("");
                     fCass.setText("");

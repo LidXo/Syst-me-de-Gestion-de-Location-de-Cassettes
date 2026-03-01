@@ -1,6 +1,7 @@
 package clubvideo.view;
 
 import clubvideo.dao.CategorieDAO;
+import clubvideo.dao.CassetteDAO;
 import clubvideo.model.Categorie;
 import clubvideo.util.UIStyles;
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 public class CategoriePanel extends JPanel implements Refreshable {
 
     private final CategorieDAO dao = new CategorieDAO();
+    private final CassetteDAO daoCass = new CassetteDAO();
     private DefaultTableModel tableModel;
 
     public CategoriePanel() {
@@ -200,12 +202,18 @@ public class CategoriePanel extends JPanel implements Refreshable {
                     "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (ok == JOptionPane.YES_OPTION) {
                 try {
+                    // Vérification des dépendances (Cassettes)
+                    if (daoCass.countByCategorie(val) > 0) {
+                        error("Impossible de supprimer cette catégorie car elle contient encore des cassettes.");
+                        return;
+                    }
+
                     dao.delete(val);
-                    ok("Catégorie supprimée.");
+                    ok("Catégorie supprimée avec succès.");
                     fCode.setText("");
                     refresh();
                 } catch (Exception ex) {
-                    error(ex.getMessage());
+                    error("Erreur lors de la suppression : " + ex.getMessage());
                 }
             }
         });

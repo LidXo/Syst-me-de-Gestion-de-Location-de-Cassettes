@@ -99,4 +99,16 @@ public class CassetteDAO {
         }
         return 0;
     }
+
+    public int countByCategorie(String codeCat) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CASSETTE WHERE categorie = ?";
+        try (PreparedStatement ps = DatabaseConnection.getInstance().prepareStatement(sql)) {
+            ps.setString(1, codeCat);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }
